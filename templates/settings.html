@@ -1,0 +1,8 @@
+<html>
+    <head>
+         <script type="text/javascript" {{ url_for('static', filename='account.js')}}></script>
+         <script type="text/javascript">
+            var user = {{ user|tojson }}
+        </script>
+    </head>
+</html>

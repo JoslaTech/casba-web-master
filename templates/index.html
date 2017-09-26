@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CASBA | Cloud Automated Spend Bank Analytics</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto:300" rel="stylesheet">
+
+  <!-- Favicons !-->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static',filename='images/favicons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static',filename='images/favicons/favicon-32x32.png') }}" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{ url_for('static',filename='images/favicons/favicon-16x16.png') }}" sizes="16x16">
+  <link rel="manifest" href="{{ url_for('static',filename='images/favicons/manifest.json') }}">
+  <link rel="mask-icon" href="{{ url_for('static',filename='images/favicons/safari-pinned-tab.svg') }}" color="#800300">
+
+  <!-- Stylesheets !-->
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/animate.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="{{ url_for('static',filename='scripts/auth.js') }}"></script>
+  <script src="{{ url_for('static',filename='scripts/index.js') }}"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- http://1000hz.github.io/bootstrap-validator/ -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+</head>
+
+<body>
+  <!-- Container encapsulating two rows; one with three columns and the other a footer -->
+  <div class="container-fluid">
+    <!-- First row containing three columns -->
+    <div class="row">
+      <!-- First column(Digital Section) left of the screen -->
+      <div class="col-md-3 digital">
+        <img class="img-responsive appIcon animated flip" src="{{ url_for('static',filename='images/logo.png') }}" alt="AppIcon">
+        <div class="loginWall animated fadeInLeftBig">
+          <!-- Flash Messages JE001 !-->
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <ul class="flashes list-unstyled">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% endwith %}
+          <h3 class="text-center title">Sign in to enjoy <br>Cognitive <br>Banking <br>Experience.</h3>
+          <form class="loginForm" data-toggle="validator" role="form" action="{{ url_for('index') }}" method="post">
+            <div class="form-group">
+              <input type="text" maxlength="11" class="form-control" name="loginBVN" id="loginBVN" pattern= "[0-9]+" data-minlength="11" aria-describedby="BVNHelp" placeholder="BVN (You can dial *565*0#)" required>
+              <small id="BVNHelp" class="form-text text-muted">We'll never share your BVN with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required>
+            </div>
+            <p class="text-center forgotPassword">Forgot password</p>
+            <br>
+            <button type="submit" class="btn btn-primary outline">Sign in</button>
+          </form>
+          <br>
+          <p class="text-center newAccount">Create an account </p>
+        </div>
+        <div class="passwordWall dismissParent animated fadeInLeftBig" style="display:none;">
+          <h1 class="text-center title">Having trouble remebering your password?</h1>
+          <p class="text-center title">Enter your BVN and answer your security question to reset your password.</p>
+          <form class="loginForm" data-toggle="validator" role="form" action="{{ url_for('index') }}" method="post">
+            <div class="form-group">
+              <input type="text" maxlength="11" class="form-control" name="passwordBVN" id="passwordBVN" pattern= "[0-9]+" data-minlength="11" aria-describedby="BVNHelp" placeholder="BVN (You can dial *565*2#)" required>
+              <p id="BVNHelp" class="form-text text-muted">We'll never share your BVN with anyone else.</p>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ1" id="inputSQ1">
+                  <option value="SQ1">Security Question 1</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA1" id="inputSA1" placeholder="Securit Answer 1" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ2" id="inputSQ2">
+                  <option value="SQ2">Security Question 2</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA2" id="inputSA2" placeholder="Security Answer 2" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ3" id="inputSQ3">
+                  <option value="SQ3">Security Question 3</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA3" id="inputSA3" placeholder="Security Answer 3" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <button type="submit" class="btn btn-primary outline">Submit!</button>
+              </div>
+              <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <button type="button" class="btn btn-primary outline dismiss">Dismiss</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="signupWall animated fadeInLeftBig dismissParent" style="display:none;">
+          <h3 class="text-center title">Get started with our Cognitive Banking experience.</h3>
+          <form class="signupForm" data-toggle="validator" role="form" action="{{ url_for('index') }}" method="post">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputFName" id="inputFName" placeholder="First name" required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputLName" id="inputLName" placeholder="Last name" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="inputLocation" id="inputLocation" required>
+                <option>Victoria Island</option>
+                <option>Lekki</option>
+                <option>Magodo</option>
+                <option>Yaba</option>
+                <option>Ikeja</option>
+                <option>Surulere</option>
+                <option>Alimosho</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <input type="date" class="form-control" name="inputDOB" id="inputDOB" placeholder="Birthday" required>
+            </div>
+            <hr>
+            <div class="form-group">
+              <input type="text" maxlength="11" class="form-control" name="signupBVN" id="signupBVN" pattern= "[0-9]+" data-minlength="11" placeholder="Biometric Verification Number" required>
+              <small id="BVNHelp" class="form-text text-muted">This will be your new CASBA ID.</small>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputPhone" id="inputPhone" placeholder="Phone No." required>
+              </div>
+              <div class="col-md-6">
+                <input type="email" class="form-control" name="inputEmail" id="inputEmail" placeholder="Email" required>
+                <div class="help-block with-errors"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword" class="control-label">Password</label>
+              <div class="form-inline row">
+                <div class="form-group col-sm-6">
+                  <input type="password" data-minlength="6" class="form-control" name="inputPassword" id="signupPassword" placeholder="Password" required>
+                  <div class="help-block">Minimum of 6 characters</div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#signupPassword" data-match-error="Whoops, these don't match" placeholder="Confirm" required>
+                  <div class="help-block with-errors"></div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ1" id="inputSQ1">
+                  <option value="SQ1">Security Question 1</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA1" id="inputSA1" placeholder="Securit Answer 1" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ2" id="inputSQ2">
+                  <option value="SQ2">Security Question 2</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA2" id="inputSA2" placeholder="Security Answer 2" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="inputSQ3" id="inputSQ3">
+                  <option value="SQ3">Security Question 3</option>
+                  <option value="lga">What local government area (LGA) were you born?</option>
+                  <option value="maiden">What is your mother's maiden name?</option>
+                  <option value="colour">What is your favourite colour?</option>
+                  <option value="car">What is the make of your first car?</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="inputSA3" id="inputSA3" placeholder="Security Answer 3" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <button type="submit" class="btn btn-primary outline">Submit!</button>
+              </div>
+              <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <button type="button" class="btn btn-primary outline dismiss">Dismiss</button>
+              </div>
+            </div>
+          </form>
+          <br>
+          <p class="text-center newLogin">Already have an account,then Login!</p>
+        </div>
+      </div>
+      <!-- Digital section(Left column) ends -->
+
+      <!-- Chat section (Center Column) starts -->
+      <div class="col-md-6 chat">
+        <!-- Kira image and speech bubble -->
+        <img class="img-responsive kiraIcon" src="{{ url_for('static',filename='images/Kira.png') }}" alt="AppIcon">
+        <div id="bubble-greet" class="popout">
+          <p class="speech">
+            <small href="" class="typewrite" data-period="2000" data-type='[ "Hello, My name is KIRA.", "I can help you carry out 24hrs banking services", "Sign Up Lets get Started..." ]'>
+              <span class="wrap"></span>
+            </small>
+          </p>
+        </div>
+        <!-- Unorderd List of Icons showing what Kira can do -->
+        <ul class="list-inline features">
+          <li class="animated bounce" id="funds">
+            <img class="img-responsive fundIcon" src="{{ url_for('static',filename='images/features/funds.png') }}" alt="AppIcon">
+            Funds Transfer
+          </li>
+          <li class="animated bounce" id="bills">
+            <img class="img-responsive billIcon" src="{{ url_for('static',filename='images/features/bills.png') }}" alt="AppIcon">
+            Bills Payment
+          </li>
+          <li class="animated bounce" id="topup">
+            <img class="img-responsive topupIcon" src="{{ url_for('static',filename='images/features/airtime.png') }}" alt="AppIcon">
+            Airtime TopUp
+          </li>
+          <li class="animated bounce" id="locate">
+            <img class="img-responsive locateIcon" src="{{ url_for('static',filename='images/features/locate.png') }}" alt="AppIcon">
+            Locate ATM
+          </li>
+          <li class="animated bounce" id="complaint">
+            <img class="img-responsive complaintIcon" src="{{ url_for('static',filename='images/features/faq.png') }}" alt="AppIcon">
+            Issues Complaint
+          </li>
+        </ul>
+        <br>
+        <p class="text-center createAccount">Create an account </p>
+        <div class="text-center adlib">
+          <p>Chat with your Personalised Banking assistant on the go <a href="#">Learn more</a>...</p>
+        </div>
+        <div class="iosAdlib">
+          <img class="img-responsive" src="static/images/app-store.png" alt="">
+        </div>
+      </div>
+      <!-- Chat Section (Center Column) ends -->
+
+      <!-- Analytics Section (Right Column) start -->
+      <div class="col-md-3 analytics">
+
+        <div class="dent animated bounceInDown">
+          <h3>Get even more with our unique <a href="#">Spend Analytics</a> and have power over your finance</h3>
+        </div>
+
+        <div class="row shell animated fadeInRightBig">
+          <div class="col-md-3">
+            <img src="static/images/save.png" alt="" class="img-responsive">
+          </div>
+          <div class="col-md-9">
+            <p>Get customised advice to<br>better budget & save</p>
+          </div>
+
+        </div>
+        <div class="row shell animated fadeInRightBig">
+          <div class="col-md-3">
+            <img src="static/images/expense.png" alt="" class="img-responsive">
+          </div>
+          <div class="col-md-9">
+            <p>Monitor your expense &<br>debt</p>
+          </div>
+
+        </div>
+        <div class="row shell animated fadeInRightBig">
+          <div class="col-md-3">
+            <img src="static/images/analyze.png" alt="" class="img-responsive">
+          </div>
+          <div class="col-md-9">
+            <p>Analyse your income &<br>investment</p>
+          </div>
+
+        </div>
+        <div class="text-center shell">
+          <p class="text-center newLogin">Log in, to get started!</p>
+        </div>
+
+      </div>
+        <!--Analytics section(Right Column) ends-->
+    </div>
+    <!-- row ends -->
+    <div class="row footer">
+      <div class="col-md-12">
+        <p class="text-center">CASBA <span class="glyphicon glyphicon-copyright-mark"></span> 2017 Josla Electric Company Ltd.</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CASBA | Cloud Automated Spend Bank Analytics</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta id="my-user" data-user="{{ userJS }}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto:300" rel="stylesheet">
+
+
+  <!-- Favicons !-->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static',filename='images/favicons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static',filename='images/favicons/favicon-32x32.png') }}" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{ url_for('static',filename='images/favicons/favicon-16x16.png') }}" sizes="16x16">
+  <link rel="manifest" href="{{ url_for('static',filename='images/favicons/manifest.json') }}">
+  <link rel="mask-icon" href="{{ url_for('static',filename='images/favicons/safari-pinned-tab.svg') }}" color="#800300">
+
+  <!-- Stylesheets !-->
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/chat.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/AdminLTE.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/AdminLTE.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/account.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/card.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="{{ url_for('static',filename='scripts/auth.js') }}"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='scripts/chat.js') }}"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $user = {{ user|tojson }};
+  });
+  </script>
+  <script type="text/javascript" src="{{ url_for('static',filename='scripts/account.js') }}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.0.3/autoNumeric.min.js"></script>
+  <!-- http://1000hz.github.io/bootstrap-validator/ -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+</head>
+
+<body>
+  <!-- Container housing two rows, one containing three columns and the other a footer -->
+  <div class="container-fluid">
+
+    <!-- first row start -->
+
+    <div class="row">
+      <!-- first column(Digital section) starts -->
+      <div class="col-md-3 digital" id="digitalChat">
+        <!-- header starts -->
+        <div class="banner">
+          <!-- Buttons on the header -->
+          <div class="header-buttons">
+            <div class="space">
+              <a type="button" href="{{url_for('logout')}}" id="logOut" class="btn btn-sm btn-md btn-xs btn-lg btn-primary outline glyphicon glyphicon-off"><span> Logout</span></a>
+            </div>
+            <div class="gap">
+              <button type="button" id="settings" class="btn btn-sm btn-md btn-xs btn-lg btn-primary outline glyphicon glyphicon-cog"><span> Settings</span></button>
+            </div>
+          </div>
+          <!-- Avatar on header -->
+          <div class="avatar">
+            <img src="static/images/User-icon.png" class="img-responsive" alt="User picture">
+          </div>
+        </div>
+        <!-- header ends -->
+        <div class="row gap" id="name-id">
+          <p id="userName">{{ user['fName'] }} {{ user['lName'] }}</p>
+          <p id="casbaID">{{ user['bvn'] }}</p>
+        </div>
+        <!-- Flash Messages JE001 !-->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flashes list-unstyled">
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <div class="profileWall animated fadeInLeftBig">
+          <div class="space" id="noAcc">
+            <p class="">Number of Account(s): <span>{{ user['accountIn'] }}</span></p>
+          </div>
+          <div class="carousel slide" id="card-carousel" data-ride="carousel">
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" id="profileCarousel">
+              
+            </div>
+
+          </div>
+        </div>
+        <!-- Profile Wall ends -->
+
+        <div class="newAccWall dismissParent animated fadeInLeftBig" style="display:none;">
+          <h4 class="text-center title">Add a New Account</h4>
+          <p class="text-center title">Your account number is automatically generated for you</p>
+          <form class="newAccForm" data-toggle="validator" role="form" action="{{ url_for('chat') }}" method="post">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="accountBank" id="inputBank">
+                  <option value="bank">Bank</option>
+                  <option value="access">Access</option>
+                  <option value="gtb">GTB</option>
+                  <option value="stanbic">Stanbic</option>
+                  <option value="zenith">Zenith</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <select class="form-control" name="accountType" id="inputAcc">
+                  <option value="type">Type</option>
+                  <option value="current">Current</option>
+                  <option value="savings">Savings</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="accountNo" id="accNo" placeholder="Account No" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="accountName" id="accName" placeholder="Account Purpose" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="accountBalance" id="accBal" placeholder="Account Balance" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-sm btn-md btn-xs btn-lg btn-primary outline">Submit!</button>
+              </div>
+              <div class="col-md-6">
+                <button type="button" class="btn btn-sm btn-md btn-xs btn-lg btn-primary outline dismiss">Dismiss</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+      <!-- first column(Digital section) ends -->
+
+      <!-- second column (Chat Section) starts -->
+      <div class="col-md-6 chat">
+        <a href="{{ url_for('index')}}" class="header">
+          <img class="img-responsive" src="{{ url_for('static',filename='images/logo.png') }}" alt="Brand" width="152" height="118">
+        </a>
+        <hr>
+        <div class="chatbot">
+          <div class="conversations" id="conversations">
+
+          </div>
+
+          <div class="compose">
+
+            <div class="row">
+              <div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 text-center">
+                <input type="text" class="inputChat" id="inputChat" name="inputChat" placeholder="How can I help you?" required>
+                <button class="send btn-sm btn-md btn-xs btn-lg" id="send">
+                  <div class="circle">
+                    <span class="glyphicon glyphicon-send"></span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <!-- second column (Chat Section) ends -->
+
+      <!-- third column (Analytics section) starts -->
+      <div class="col-md-3 analytics-dashboard">
+
+      </div>
+      <!-- third column (Analytics section) ends -->
+
+    </div>
+    <!-- first row ends -->
+
+    <!-- second row (Footer) starts -->
+
+    <div class="row footer">
+      <div class="col-md-12">
+        <p class="text-center">CASBA. JOSLA ELECTRIC <span class="glyphicon glyphicon-copyright-mark"></span> 2017</p>
+      </div>
+    </div>
+    <!-- second row (Footer) ends -->
+
+  </div>
+  <!-- Container ends here -->
+
+</body>
+
+</html>
